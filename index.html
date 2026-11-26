@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f5fa">
+<title>Informatik an der Elly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: App-Shell wie „Englisch an der Elly“. Desktop: Kopfleiste mit Navigation. Handy: App-Bar oben, Tab-Leiste unten, Listen, Details aufklappbar. Farben = Inhaltsfelder. */
+:root {
+  --ink: #142037; --paper: #f2f5fa; --card: #ffffff; --line: #e1e6ef; --muted: #5f6c83;
+  --accent: #1d5bd6; --accent-soft: #e7eefc; --on-accent: #ffffff;
+  --id: #1d5bd6; --id-soft: #e4ecfd; --al: #0f8a5f; --al-soft: #e2f4ec; --ak: #d9640b; --ak-soft: #fdeedf; --is: #8a3ffc; --is-soft: #f1e9ff; --img: #0b8a9a; --img-soft: #dff4f6; --ot: #5f6c83; --ot-soft: #eceff4;
+  --brand: #0f8a5f; --v: #9a6a00; --v-soft: #fff4d6;
+  --shadow: 0 1px 2px rgba(20, 32, 55, .06), 0 4px 14px rgba(20, 32, 55, .06);
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --tabh: 62px; color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #e8eef8; --paper: #0d1320; --card: #161f31; --line: #26314a; --muted: #9aa8c1;
+    --accent: #7aa7ff; --accent-soft: #1c2a48; --on-accent: #0d1320;
+    --id: #7aa7ff; --id-soft: #1b2946; --al: #4fd1a1; --al-soft: #12312a; --ak: #ffa25c; --ak-soft: #392514; --is: #b993ff; --is-soft: #2a2145; --img: #5fd3e0; --img-soft: #10313a; --ot: #9aa8c1; --ot-soft: #222c40;
+    --brand: #2fae80; --v: #f0c35a; --v-soft: #3a3014; --shadow: 0 1px 2px rgba(0,0,0,.3); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #e8eef8; --paper: #0d1320; --card: #161f31; --line: #26314a; --muted: #9aa8c1;
+  --accent: #7aa7ff; --accent-soft: #1c2a48; --on-accent: #0d1320;
+  --id: #7aa7ff; --id-soft: #1b2946; --al: #4fd1a1; --al-soft: #12312a; --ak: #ffa25c; --ak-soft: #392514; --is: #b993ff; --is-soft: #2a2145; --img: #5fd3e0; --img-soft: #10313a; --ot: #9aa8c1; --ot-soft: #222c40;
+  --brand: #2fae80; --v: #f0c35a; --v-soft: #3a3014; --shadow: 0 1px 2px rgba(0,0,0,.3); color-scheme: dark;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; min-width: 0; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 16px/1.5 var(--body); overflow-x: clip; }
+a { color: var(--accent); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(26px, 5vw, 38px); font-weight: 800; letter-spacing: -.01em; }
+h2 { font-size: 19px; font-weight: 800; }
+h3 { font-size: 16px; font-weight: 600; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--card) 90%, transparent); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top); }
+.top-in { max-width: 1120px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 12px; align-items: center; min-height: 56px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.logo { width: 34px; height: 34px; border-radius: 10px; background: var(--brand); color: #fff; display: grid; place-items: center; font: 800 15px var(--display); letter-spacing: .02em; }
+.brand b { font: 800 18px var(--display); white-space: nowrap; }
+.back { display: none; border: 0; background: none; padding: 6px; margin-left: -6px; border-radius: 10px; color: var(--accent); align-items: center; gap: 2px; text-decoration: none; font-weight: 600; }
+.apptitle { display: none; font: 800 17px var(--display); flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dnav { display: flex; gap: 2px; flex: 1; flex-wrap: wrap; }
+.dnav a { text-decoration: none; color: var(--ink); padding: 6px 10px; border-radius: 9px; font-weight: 600; font-size: 15px; }
+.dnav a:hover { background: var(--accent-soft); }
+.dnav a.on { background: var(--accent); color: var(--on-accent); }
+.sbtn { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 12px; display: flex; gap: 8px; align-items: center; color: var(--muted); cursor: pointer; min-width: 200px; }
+
+[id^="kf-"] { scroll-margin-top: 76px; }
+main { max-width: 1120px; margin: 0 auto; padding: 22px 16px 70px; }
+
+.tabbar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
+.tabbar-in { display: grid; grid-template-columns: repeat(5, 1fr); height: var(--tabh); }
+.tabbar a, .tabbar button { border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 11px; font-weight: 600; color: var(--muted); text-decoration: none; cursor: pointer; }
+.tabbar .on { color: var(--accent); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.pad { padding: 16px; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.sec { margin-top: 24px; display: grid; gap: 10px; }
+.sechead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.sechead a { font-size: 14px; font-weight: 600; text-decoration: none; }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--soft, var(--accent-soft)); color: var(--c, var(--accent)); text-decoration: none; white-space: nowrap; }
+.chip.free { --soft: var(--line); --c: var(--muted); }
+.f-ID { --c: var(--id); --soft: var(--id-soft); } .f-AL { --c: var(--al); --soft: var(--al-soft); } .f-AK { --c: var(--ak); --soft: var(--ak-soft); }
+.f-IS { --c: var(--is); --soft: var(--is-soft); } .f-IMG { --c: var(--img); --soft: var(--img-soft); } .f-ot { --c: var(--ot); --soft: var(--ot-soft); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.seg { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px; margin: 0 -2px; }
+.seg::-webkit-scrollbar { display: none; }
+.seg a { flex: none; min-width: 52px; text-align: center; text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font: 800 16px var(--display); }
+.seg a.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+.rows { display: grid; overflow: hidden; }
+.row { display: grid; grid-template-columns: 6px 1fr auto; gap: 12px; align-items: center; padding: 12px 14px 12px 0; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--line); min-height: 64px; }
+.row:last-child { border-bottom: 0; }
+.row:hover { background: color-mix(in srgb, var(--accent-soft) 50%, transparent); }
+.row .bar { align-self: stretch; background: var(--c); border-radius: 0 4px 4px 0; }
+.row .t { font-weight: 700; line-height: 1.25; }
+.row .m { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.row .r { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+
+.strip { display: flex; gap: 3px; height: 34px; border-radius: 10px; overflow: hidden; }
+.strip a { background: var(--soft); border-top: 4px solid var(--c); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--c); text-decoration: none; min-width: 0; }
+.stripleg { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; background: var(--c); }
+
+.hello { display: grid; gap: 6px; }
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.tile { text-decoration: none; color: var(--ink); padding: 14px; display: grid; gap: 4px; }
+.tile .n { font: 800 40px/1 var(--display); color: var(--accent); }
+.tile .s { font-size: 13px; color: var(--muted); }
+.tile .mini { display: flex; gap: 2px; height: 6px; margin-top: 8px; border-radius: 4px; overflow: hidden; }
+.tile .mini span { background: var(--c); }
+.tile .ul2 { font-size: 14px; margin: 6px 0 0; padding-left: 18px; display: grid; gap: 2px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.stat { padding: 12px 14px; }
+.stat b { display: block; font: 800 26px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--muted); }
+
+.thead { display: grid; gap: 10px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.facts div { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.facts b { display: block; font: 800 20px/1.1 var(--display); }
+.facts span { font-size: 12px; color: var(--muted); }
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: baseline; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.steps li:last-child { border-bottom: 0; }
+.steps li::before { counter-increment: s; content: counter(s); font: 800 13px var(--display); color: var(--accent); background: var(--accent-soft); border-radius: 8px; text-align: center; padding: 2px 0; }
+.steps li.note { grid-template-columns: 28px 1fr; color: var(--muted); font-style: italic; font-size: 14px; }
+.steps li.note::before { content: "i"; counter-increment: none; background: var(--line); color: var(--muted); font-style: normal; }
+.steps .pg { font-size: 13px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.flow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.flow h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; }
+.flow ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 15px; }
+.flow a.chip { margin-right: 4px; }
+
+.acc { display: grid; gap: 10px; }
+details.card > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 12px; padding: 14px 16px; font-weight: 700; }
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary .ico { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--soft, var(--accent-soft)); color: var(--c, var(--accent)); flex: none; }
+details.card > summary .lbl { flex: 1; }
+details.card > summary .lbl small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+details.card > summary .chev { transition: transform .2s; color: var(--muted); }
+details.card[open] > summary .chev { transform: rotate(90deg); }
+details.card .body { padding: 0 16px 16px; display: grid; gap: 10px; font-size: 15px; }
+.body ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.kl { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 6px; }
+.kl .lab { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+.pager a { text-decoration: none; color: var(--ink); padding: 12px 14px; font-size: 15px; font-weight: 600; line-height: 1.3; }
+.pager a small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
+.pager a.next { text-align: right; grid-column: 2; }
+
+.ke { list-style: none; margin: 0; padding: 0; display: grid; }
+.ke li { display: grid; gap: 4px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.ke li:last-child { border-bottom: 0; }
+.ke li.v span.tx { font-style: italic; color: var(--muted); }
+.ke .meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 13px; }
+.ref { color: var(--accent); font-size: 13px; font-variant-numeric: tabular-nums; }
+.vt { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--v-soft); color: var(--v); white-space: nowrap; font-style: normal; }
+.tag { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
+.klp-sub { font-weight: 700; padding-top: 8px; font-size: 14px; }
+.hint { border-left: 5px solid var(--v); background: var(--v-soft); border-radius: 12px; padding: 12px 14px; font-size: 15px; }
+.toggle { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; cursor: pointer; padding: 4px 0; }
+.toggle input { width: 20px; height: 20px; accent-color: var(--accent); }
+.prose ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
+.prose p { margin: 0; }
+
+.search { position: fixed; inset: 0; z-index: 40; background: var(--paper); display: none; flex-direction: column; padding-top: env(safe-area-inset-top); }
+.search.show { display: flex; }
+.search-top { display: flex; gap: 10px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--card); }
+.search-top input { flex: 1; font: inherit; font-size: 17px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+.search-top button { border: 0; background: none; color: var(--accent); font-weight: 700; cursor: pointer; padding: 8px; }
+.search-res { overflow: auto; padding: 12px 16px 40px; max-width: 760px; width: 100%; margin: 0 auto; }
+.search-res .hint2 { color: var(--muted); font-size: 14px; padding: 8px 2px; }
+
+@media (max-width: 760px) {
+  .dnav, .sbtn, .brand b { display: none; }
+  .apptitle { display: block; }
+  .back.show { display: inline-flex; }
+  .brand.hide { display: none; }
+  .tabbar { display: block; }
+  main { padding: 16px 14px calc(var(--tabh) + env(safe-area-inset-bottom) + 28px); }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .flow { grid-template-columns: 1fr; }
+  .facts b { font-size: 18px; }
+  .row { min-height: 60px; }
+  h1.big { font-size: 28px; }
+  .desk { display: none; }
+}
+@media (max-width: 420px) { .tiles { grid-template-columns: 1fr; } }
+@media (min-width: 761px) { .mob { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="back" id="back" href="#start"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span id="backlbl">Zurück</span></a>
+  <a class="brand" id="brand" href="#start"><span class="logo">IF</span><b>Informatik an der Elly</b></a>
+  <span class="apptitle" id="apptitle">Informatik an der Elly</span>
+  <nav class="dnav" id="dnav"></nav>
+  <button class="sbtn" id="sbtn" type="button"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Suchen</button>
+  <button class="back mob" id="msearch" type="button" aria-label="Suchen" style="display:inline-flex;margin:0 -6px 0 0"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+</div></header>
+<main id="app"></main>
+<nav class="tabbar" aria-label="Hauptnavigation"><div class="tabbar-in" id="tabbar"></div></nav>
+<div class="search" id="search" role="dialog" aria-label="Suche">
+  <div class="search-top"><input id="q" type="search" placeholder="z. B. EVA, Binär, Ordner, Schleife" aria-label="Suchen" autocomplete="off"><button type="button" id="sclose">Fertig</button></div>
+  <div class="search-res" id="res"></div>
+</div>
+<script>
+{
+const DATA = {"KLP":{"ueber":{"A":{"name":"Argumentieren (A)","items":{"A1":["formulieren Fragen zu einfachen informatischen Sachverhalten"],"A2":["äußern Vermutungen zu informatischen Sachverhalten auf der Basis von Alltagsvorstellungen oder Vorwissen"],"A3":["erläutern mögliche Auswirkungen des Einsatzes von Informatiksystemen"],"A4":["begründen die Auswahl eines Informatiksystems"],"A5":["bewerten ein Ergebnis einer informatischen Modellierung",true,"MKR 6.4"]}},"MI":{"name":"Modellieren und Implementieren (MI)","items":{"MI1":["erstellen informatische Modelle zu gegebenen Sachverhalten"],"MI2":["implementieren informatische Modelle unter Verwendung algorithmischer Grundstrukturen",false,"MKR 6.1, 6.2"],"MI3":["überprüfen Modelle und Implementierungen"]}},"DI":{"name":"Darstellen und Interpretieren (DI)","items":{"DI1":["beschreiben einfache Darstellungen von informatischen Sachverhalten"],"DI2":["stellen informatische Sachverhalte in geeigneter Form dar"],"DI3":["interpretieren informatische Darstellungen"]}},"KK":{"name":"Kommunizieren und Kooperieren (KK)","items":{"KK1":["beschreiben einfache informatische Sachverhalte unter Verwendung von Fachbegriffen sachgerecht"],"KK1v":["anstelle der vorherigen KE: erläutern informatische Sachverhalte unter Verwendung von Fachbegriffen sachgerecht",true],"KK2":["kooperieren in verschiedenen Formen der Zusammenarbeit bei der Bearbeitung einfacher informatischer Probleme"],"KK3":["strukturieren gemeinsam eine Lösung für ein informatisches Problem"],"KK4":["dokumentieren gemeinsam ihren Arbeitsprozess und ihre Ergebnisse auch mithilfe digitaler Werkzeuge",false,"MKR 1.2"],"KK5":["setzen bei der Bearbeitung einer informatischen Problemstellung geeignete digitale Werkzeuge zum kollaborativen Arbeiten ein",false,"MKR 1.2, 3.1"]}}},"felder":{"ID":{"name":"Information und Daten","sp":["Daten und ihre Codierung","Informationsgehalt von Daten","Verschlüsselungsverfahren"],"items":{"ID1":["erläutern den Datenbegriff anhand von Beispielen aus ihrer Erfahrungswelt (A)"],"ID2":["erläutern den Zusammenhang und die Bedeutung von Information und Daten (A)"],"ID3":["stellen eine ausgewählte Information in geeigneter Form als Daten formalsprachlich oder graphisch dar (DI)"],"ID4":["nennen Beispiele für die Codierung von Daten aus ihrer Erfahrungswelt (DI)"],"ID5":["codieren und decodieren Daten unter Verwendung des Binärsystems (MI)"],"ID6":["interpretieren ausgewählte Daten als Information im gegebenen Kontext (DI)"],"ID7":["erläutern Einheiten von Datenmengen (A/KK)"],"ID8":["vergleichen Datenmengen hinsichtlich ihrer Größe mithilfe anschaulicher Beispiele aus ihrer Lebenswelt (DI)",true],"ID9":["erläutern ein einfaches Transpositionsverfahren als Möglichkeit der Verschlüsselung (DI)",false,"MKR 1.4"],"ID10":["vergleichen verschiedene Verschlüsselungsverfahren unter Berücksichtigung von ausgewählten Sicherheitsaspekten (DI)",true,"MKR 1.4"]}},"AL":{"name":"Algorithmen","sp":["Algorithmen und algorithmische Grundkonzepte","Implementation von Algorithmen"],"items":{"AL1":["formulieren zu Abläufen aus dem Alltag eindeutige Handlungsvorschriften (DI)"],"AL2":["überführen Handlungsvorschriften in einen Programmablaufplan (PAP) oder ein Struktogramm (MI)",true],"AL3":["führen Handlungsvorschriften schrittweise aus (MI)"],"AL4":["identifizieren in Handlungsvorschriften Anweisungen und die algorithmischen Grundstrukturen Sequenz, Verzweigung und Schleife (MI)",false,"MKR 6.2"],"AL5":["implementieren Algorithmen in einer visuellen Programmiersprache (MI)",false,"MKR 6.1, 6.3"],"AL6":["implementieren Algorithmen unter Berücksichtigung des Prinzips der Modularisierung (MI)",true,"MKR 6.1, 6.3"],"AL7":["überprüfen die Wirkungsweise eines Algorithmus durch zielgerichtetes Testen (MI)",false,"MKR 6.2"],"AL8":["ermitteln durch die Analyse eines Algorithmus dessen Ergebnis (DI)",true,"MKR 6.2"],"AL9":["bewerten einen als Quelltext, Programmablaufplan (PAP) oder Struktogramm dargestellten Algorithmus hinsichtlich seiner Funktionalität (A)",true,"MKR 6.3"]}},"AK":{"name":"Automaten und künstliche Intelligenz","sp":["Aufbau und Wirkungsweise einfacher Automaten","Maschinelles Lernen mit Entscheidungsbäumen","Maschinelles Lernen mit neuronalen Netzen"],"items":{"AK1":["erläutern die Funktionsweise eines Automaten aus ihrer Lebenswelt (A)",false,"MKR 6.1"],"AK2":["stellen Abläufe in Automaten graphisch dar (DI)"],"AK3":["benennen Anwendungsbeispiele künstlicher Intelligenz aus ihrer Lebenswelt (A)"],"AK4":["stellen das Grundprinzip eines Entscheidungsbaumes enaktiv als ein Prinzip des maschinellen Lernens dar (DI)"],"AK5":["beschreiben die grundlegende Funktionsweise künstlicher neuronaler Netze in verschiedenen Anwendungsbeispielen (KK)",true]}},"IS":{"name":"Informatiksysteme","sp":["Aufbau und Funktionsweise von Informatiksystemen","Anwendung von Informatiksystemen"],"items":{"IS1":["benennen Beispiele für (vernetzte) Informatiksysteme aus ihrer Erfahrungswelt (DI)"],"IS2":["benennen Grundkomponenten von (vernetzten) Informatiksystemen und beschreiben ihre Funktionen (DI)"],"IS3":["beschreiben das Prinzip der Eingabe, Verarbeitung und Ausgabe (EVA-Prinzip) als grundlegendes Prinzip der Datenverarbeitung (DI)",false,"MKR 6.1"],"IS4":["vergleichen Möglichkeiten der Datenverwaltung hinsichtlich ihrer spezifischen Charakteristika (u. a. Speicherort, Kapazität, Aspekte der Datensicherheit) (A)"],"IS5":["setzen zielgerichtet Informatiksysteme zur Verarbeitung von Daten ein (MI)"],"IS6":["erläutern Prinzipien der strukturierten Dateiverwaltung (A)",false,"MKR 1.3"],"IS7":["setzen Informatiksysteme zur Kommunikation und Kooperation ein (KK)",false,"MKR 3.1"]}},"IMG":{"name":"Informatik, Mensch und Gesellschaft","sp":["Informatiksysteme in der Lebens- und Arbeitswelt","Datenbewusstsein","Datensicherheit und Sicherheitsregeln"],"items":{"IMG1":["beschreiben an Beispielen die Bedeutung von Informatiksystemen in der Lebens- und Arbeitswelt (KK)",false,"MKR 6.4"],"IMG2":["benennen an ausgewählten Beispielen Auswirkungen des Einsatzes von Informatiksystemen auf ihre Lebens- und Erfahrungswelt (A/KK)",false,"MKR 6.4; VB C Z5"],"IMG3":["anstelle der vorherigen KE: erläutern an ausgewählten Beispielen Auswirkungen des Einsatzes von Informatiksystemen (A/KK)",true,"MKR 6.4; VB C Z5"],"IMG4":["beschreiben anhand von ausgewählten Beispielen die Verarbeitung und Nutzung personenbezogener Daten (DI)",false,"VB C Z5"],"IMG5":["erläutern anhand von Beispielen aus ihrer Lebenswelt Nutzen und Risiken beim Umgang mit eigenen und fremden Daten auch im Hinblick auf Speicherorte (A)",false,"VB C Z3"],"IMG6":["beschreiben Maßnahmen zum Schutz von Daten mithilfe von Informatiksystemen (A)",false,"MKR 1.4; VB C Z2"]}}}},"UV":[{"id":"5.1","jg":5,"kurz":"Hardware, EVA & Software","titel":"Mein Computer – Hardware, EVA-Prinzip und Software","frage":"Woraus besteht ein Computer und wie arbeitet er?","std":8,"felder":{"IS":[0,1],"IMG":[0]},"ueber":["A1","A2","A4","DI1","KK1","KK1v","KK5"],"konkret":["IS1","IS2","IS3","IS5","IS7","IMG1","IMG2"],"bausteine":[["Informatiksysteme um mich herum: Wo steckt überall ein Computer drin? (Handy, Kasse, Auto, Spielkonsole …)",1],["Der Computer-Arbeitsplatz: Bildschirm, Tower, Tastatur, Maus, Drucker benennen; Tastatur kennenlernen (Umschalt-, Feststell-, Enter-, Leertaste)",2],["Im Inneren des Towers: Prozessor, Arbeitsspeicher, Festplatte/SSD, Mainboard und ihre Aufgaben",1],["Das EVA-Prinzip: Eingabe-, Verarbeitungs- und Ausgabegeräte sortieren; EVA im Alltag (Taschenrechner, Kasse, Kaffeeautomat)",2],["Hardware oder Software? Programme der Schule kennen und nutzen: IServ, Schulmanager, Teams, Office, Browser, Paint; erste Anmeldung",2]],"material":["Präsentation „Hardware und Software“ (entdeckend, mit Tastatur zum Beschriften)","HTML-App zum Erkunden der Hardware","AB 1 „Der Computer-Arbeitsplatz“, AB 2 „Im Inneren des Towers“","Wortspeicher mit Bildkarten (Fachbegriffe)"],"leistung":["beschriftete Skizze des Computer-Arbeitsplatzes","EVA-Zuordnung (kurze schriftliche Übung)","Mitarbeit bei der Arbeit am PC"],"vernetzung":["EVA-Prinzip und Grundkomponenten werden in UV 6.2 (Automaten) wieder aufgegriffen","Anmeldung und Programme sind Grundlage für alle weiteren UV, vor allem UV 5.2"],"synergien":["alle Fächer: sicherer Umgang mit IServ und Schulmanager","Deutsch: Fachwortschatz, sprachsensible Wortspeicher"]},{"id":"5.2","jg":5,"kurz":"Ordner, Dateien & Speichern","titel":"Ordnung im Computer – Dateien, Ordner und Speichern","frage":"Wie speichere ich meine Arbeit so, dass ich sie wiederfinde – und dass sie sicher ist?","std":6,"felder":{"IS":[1],"IMG":[1,2]},"ueber":["A1","A4","DI2","KK1","KK5"],"konkret":["IS4","IS5","IS6","IS7","IMG5","IMG6"],"bausteine":[["Datei oder Ordner? Ordnung wie im Schulranzen und im Aktenschrank; einen Ordnerbaum zeichnen",1],["Speichern und „Speichern unter“: sinnvolle Dateinamen, Dateiendungen erkennen (.docx, .pdf, .png, .mp3)",1],["Eigene Ordnerstruktur für die Schulfächer anlegen: Ordner erstellen, umbenennen, Dateien verschieben, kopieren, löschen, Papierkorb",2],["Wo liegen meine Daten? Festplatte, USB-Stick und IServ/Cloud vergleichen (Speicherort, Kapazität, Sicherheit)",1],["Sicher arbeiten: gute Passwörter, Abmelden nicht vergessen, Dateien über IServ teilen und abgeben",1]],"material":["Übungsauftrag „Mein Schuljahr-Ordner“ (Ordnerstruktur nach Vorgabe)","Bildkarten Datei/Ordner/Speicherort","IServ-Dateiablage"],"leistung":["praktische Aufgabe: Ordnerstruktur anlegen und Datei richtig benannt am richtigen Ort speichern","Mitarbeit bei der Arbeit am PC"],"vernetzung":["Kapazität wird in UV 5.3 über Einheiten von Datenmengen vertieft","Passwörter werden in UV 6.1 aufgegriffen, Speicherorte und Datenschutz in UV 6.4"],"synergien":["alle Fächer: Abgabe und Ablage von Dateien in IServ","Klassenleitung: Regeln für Schul-Accounts"]},{"id":"5.3","jg":5,"kurz":"Daten & Codierung","titel":"Aus Daten werden Informationen – Codierung und Binärsystem","frage":"Wie versteht ein Computer Zahlen, Texte und Bilder?","std":8,"felder":{"ID":[0,1]},"ueber":["A1","A2","DI1","DI2","DI3","KK1","KK2"],"konkret":["ID1","ID2","ID3","ID4","ID5","ID6","ID7","ID8"],"bausteine":[["Zeichen, Daten, Information: das mehrdeutige „2-5“, Wissenspyramide (Zeichen – Anordnung – Bedeutung – Anwendung), Transfer auf das V-Zeichen",2],["Codierungen im Alltag: Verkehrszeichen, Emojis, Barcode, QR-Code, Morsecode, Brailleschrift",1],["Nur 0 und 1: Bits mit Binärkarten darstellen, Zahlen binär codieren und decodieren",2],["Bilder aus Pixeln: Schwarz-Weiß-Bilder als 0/1 codieren und Pixelbilder entschlüsseln",1],["Wie viel passt da rein? Bit, Byte, KB, MB, GB, TB; Dateigrößen von Foto, Lied und Film vergleichen",2]],"material":["Präsentation „Aus Daten werden Informationen“","Binärkarten (enaktiv)","Pixel-Raster zum Ausmalen"],"leistung":["Codier- und Decodieraufgaben","eigenes Pixelbild mit Code","kurze schriftliche Übung"],"vernetzung":["Codierung ist Grundlage für die Verschlüsselung in UV 6.1","Daten als Information deuten: UV 6.4 (KI und Datenbewusstsein)"],"synergien":["Mathematik: Stellenwertsysteme","Kunst: Pixelbilder"]},{"id":"5.4","jg":5,"kurz":"Niki der Roboter","titel":"Niki der Roboter – von der Anweisung zum Algorithmus","frage":"Wie bringe ich einem Roboter bei, genau das zu tun, was ich will?","std":10,"felder":{"AL":[0,1]},"ueber":["A1","A2","MI1","MI2","MI3","DI1","KK1","KK2"],"konkret":["AL1","AL3","AL4","AL5","AL7"],"bausteine":[["Ohne PC: Handlungsvorschriften aus dem Alltag (Brot schmieren, Zähne putzen) – eindeutig oder nicht?",2],["Ohne PC: Roboter-Spiel im Raster – Kinder steuern sich gegenseitig mit festen Befehlen (vor, links drehen, aufheben, ablegen)",1],["Erste Schritte mit Niki am PC: Befehle als Blöcke, Sequenzen",2],["Wiederholungen mit Schleifen",2],["Testen und Fehler finden",1],["Niki-Parcours: Aufgaben lösen, eigene Lösung vorstellen",2]],"material":["„Niki der Roboter“ (net-schulbuch.de, blockbasiert)","Rasterfeld und Befehlskarten für den Start ohne PC"],"leistung":["gelöste Niki-Aufgaben","eigenes Programm erklären"],"vernetzung":["Fortsetzung in UV 6.3: Verzweigungen, PAP, größere Programme","Handlungsvorschriften schrittweise ausführen: UV 6.1"],"synergien":["Deutsch: Vorgangsbeschreibung","Sport: Bewegungsspiele zu Befehlsfolgen"],"hinweis":"Sehr kleinschrittig arbeiten; in jeder Stunde Zeit für das Anmelden am PC einplanen."},{"id":"6.1","jg":6,"kurz":"Verschlüsselung","titel":"SpionCamp – Geheimschriften und Verschlüsselung","frage":"Wie verschicke ich eine Nachricht so, dass nur die richtige Person sie lesen kann?","std":8,"felder":{"ID":[0,2],"AL":[0],"IMG":[2]},"ueber":["A1","A2","A3","MI1","DI2","DI3","KK1","KK3","KK4"],"konkret":["ID4","ID9","ID10","AL3","IMG6"],"bausteine":[["Warum verschlüsseln? Geheimnisse im Alltag; Codieren ist nicht gleich Verschlüsseln",1],["Geschichte der Geheimschriften: Hieroglyphen",1],["Caesar-Verschlüsselung: Schlüssel, Chiffrierscheibe, ver- und entschlüsseln",2],["Transpositionsverfahren: Skytale und Spaltentransposition",2],["Wie sicher ist das? Verfahren knacken und vergleichen; sichere Passwörter",1],["Abschlussmission und Rückblick",1]],"material":["Lern-App „SpionCamp Junior – Operation Maulwurf“ (Codewort-Freischaltung, Basis/Standard/Experte)","Chiffrierscheibe, Skytale (Papierstreifen und Stab)"],"leistung":["Missionsnachweise (Codewörter) aus der App","Ver- und Entschlüsselungsaufgaben"],"vernetzung":["baut auf Codierung (UV 5.3) und Passwörtern (UV 5.2) auf","Datenschutz wird in UV 6.4 vertieft"],"synergien":["Geschichte: Altes Ägypten (Hieroglyphen)","Deutsch: Geheimsprachen in Kinderbüchern (z. B. Räubersprache)"]},{"id":"6.2","jg":6,"kurz":"Automaten","titel":"Automaten-Alarm – Automaten in unserer Lebenswelt","frage":"Woher weiß ein Automat, was er als Nächstes tun muss?","std":6,"felder":{"AK":[0],"IS":[0]},"ueber":["A1","A2","MI1","MI3","DI1","DI2","KK1","KK2"],"konkret":["AK1","AK2","IS2","IS3"],"bausteine":[["Automaten im Alltag; der Lichtschalter als Automat mit zwei Zuständen",1],["Den Kaugummiautomaten untersuchen: Eingaben, Zustände, Ausgaben (EVA)",1],["Zustandsdiagramme lesen und selbst zeichnen",2],["Die Fußgängerampel als Automat modellieren",1],["Wahlstation, z. B. „Mampfi das Monster“ (PRIMM)",1]],"material":["Lern-App „Automaten-Alarm“ (Bauplan-Editor, Ampel-Finale)","HTML-App „Mampfi das Monster“","Ideen von inf-schule.de (Kaugummiautomat)"],"leistung":["eigenes Zustandsdiagramm zu einem Alltagsautomaten","Nachweise aus der App"],"vernetzung":["greift EVA-Prinzip und Grundkomponenten aus UV 5.1 auf","Abläufe und Bedingungen leiten zu UV 6.3 (Verzweigungen) über"],"synergien":["Verkehrserziehung: Fußgängerampel","Technik/Physik: Schalter und Stromkreise"]},{"id":"6.3","jg":6,"kurz":"Programmieren","titel":"Mission Orbit – Algorithmen und Programmieren","frage":"Wie plane und programmiere ich Abläufe mit Schleifen und Verzweigungen?","std":9,"felder":{"AL":[0,1]},"ueber":["A1","A5","MI1","MI2","MI3","DI1","DI2","DI3","KK1","KK3"],"konkret":["AL1","AL2","AL3","AL4","AL5","AL6","AL7","AL8","AL9"],"bausteine":[["Algorithmen im Alltag entdecken",1],["Vorgangsbeschreibungen eindeutig formulieren",1],["Den Ablauf planen: Programmablaufplan (PAP)",1],["Blockprogrammierung: Sequenzen; PAP und Programm verknüpfen",1],["Fehler finden und gezielt testen",1],["Schleifen",2],["Verzweigungen (wenn – dann – sonst)",2]],"material":["Lernpfad-App „Mission Orbit“ (Raumstation, 7 Pflichtstationen mit Codewort, Lernbüro mit Wahlstationen, Finale)","Begleitmaterial (Lehrer- und Schülerhandbuch, Einstiegspräsentation) in Vorbereitung"],"leistung":["Stationsnachweise aus der App","eigener PAP mit passendem Programm"],"vernetzung":["setzt UV 5.4 (Niki) fort","nutzt Zustände und Bedingungen aus UV 6.2"],"synergien":["Mathematik: Rechenabläufe strukturieren","Deutsch: Vorgangsbeschreibung"],"hinweis":"Der PAP ist laut KLP für die Realschule eine Vertiefung; an der Elly wird er in diesem UV verbindlich eingeführt. Prinzip: erst ausprobieren, dann erklären; Hilfen in Stufen."},{"id":"6.4","jg":6,"kurz":"KI & meine Daten","titel":"Künstliche Intelligenz und meine Daten","frage":"Wie lernen Computer aus Daten – und was verraten meine Daten über mich?","std":8,"felder":{"AK":[1,2],"ID":[1],"IMG":[0,1,2]},"ueber":["A1","A2","A3","DI2","DI3","KK1","KK1v","KK2"],"konkret":["AK3","AK4","AK5","ID6","IMG2","IMG3","IMG4","IMG5","IMG6"],"bausteine":[["Wo begegnet mir KI? Sprachassistenten, Empfehlungen, Übersetzer, Gesichtserkennung",1],["Entscheidungsbaum enaktiv: Gegenstände oder Tiere mit Fragekarten sortieren lassen",2],["Ein Computer lernt aus Beispielen: Trainingsdaten, Fehler, Grenzen",1],["Was verraten meine Daten? Datenspuren und personenbezogene Daten in Apps und Spielen",2],["Meine Daten schützen: Privatsphäre-Einstellungen, Passwörter, Regeln",1],["Fair und verantwortungsvoll mit KI umgehen",1]],"material":["Karten zum Entscheidungsbaum (enaktiv)","datensparsames Online-Werkzeug zum Trainieren eines Modells (Auswahl durch die Fachschaft)","Fallbeispiele zu Datenspuren"],"leistung":["eigener Entscheidungsbaum","Plakat oder Präsentation „Meine Datenregeln“"],"vernetzung":["Daten als Information deuten (UV 5.3)","Speicherorte und Passwörter (UV 5.2, 6.1)"],"synergien":["Biologie: Bestimmungsschlüssel als Entscheidungsbaum","Politik/Wirtschaft: Daten als Geschäftsmodell"],"hinweis":"Dieses UV sichert die verbindlichen KLP-Schwerpunkte „Maschinelles Lernen“ und „Datenbewusstsein“."}]};
+const { KLP, UV } = DATA;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const JGS = [5, 6];
+const slug = (id) => "uv-" + id.replace(".", "-");
+const byId = Object.fromEntries(UV.map((u) => [u.id, u]));
+const U = {}, UG = {}, K = {}, KF = {};
+for (const [g, o] of Object.entries(KLP.ueber)) for (const [k, v] of Object.entries(o.items)) { U[k] = v; UG[k] = g; }
+for (const [f, o] of Object.entries(KLP.felder)) for (const [k, v] of Object.entries(o.items)) { K[k] = v; KF[k] = f; }
+const FN = { ID: "Information und Daten", AL: "Algorithmen", AK: "Automaten und KI", IS: "Informatiksysteme", IMG: "Informatik, Mensch und Gesellschaft" };
+const FS = { ID: "Daten", AL: "Algorithmen", AK: "Automaten & KI", IS: "Informatiksysteme", IMG: "Mensch & Gesellschaft" };
+const mainF = (u) => Object.keys(u.felder)[0];
+const fieldsOf = (u) => Object.keys(u.felder);
+const where = (k) => UV.filter((u) => u.konkret.includes(k) || u.ueber.includes(k)).map((u) => u.id);
+let showV = true; try { showV = localStorage.getItem("elly-if-v") !== "0"; } catch (e) {}
+let lastJg = 5; try { lastJg = +localStorage.getItem("elly-if-jg") || 5; } catch (e) {}
+
+const ICON = {
+  home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+  layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>',
+  target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+  scale: '<path d="M12 3v18M5 7h14M5 7l-3 7a4 4 0 0 0 6 0zM19 7l-3 7a4 4 0 0 0 6 0z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  chev: '<path d="M9 6l6 6-6 6"/>',
+  list: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+  users: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>',
+  box: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+  clip: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 12h6M9 16h4"/>',
+  chip: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
+  book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/>',
+};
+const FI = { ID: "list", AL: "layers", AK: "box", IS: "chip", IMG: "users" };
+const ic = (n, cls = "i") => `<svg class="${cls}" viewBox="0 0 24 24">${ICON[n]}</svg>`;
+
+function shell(tab, title, back) {
+  const dn = [["start", "Start"], ["jg-5", "Klasse 5"], ["jg-6", "Klasse 6"], ["kompetenzen", "Kompetenzen"], ["bewertung", "Grundsätze & Bewertung"]];
+  $("#dnav").innerHTML = dn.map(([h, l]) => `<a href="#${h}" class="${tab === h ? "on" : ""}">${l}</a>`).join("");
+  const tb = [["start", "home", "Start", "start"], [`jg-${lastJg}`, "layers", "Klassen", "jg"], ["kompetenzen", "target", "Kompetenzen", "kompetenzen"], ["bewertung", "scale", "Bewertung", "bewertung"]];
+  const group = tab.startsWith("jg-") ? "jg" : tab;
+  $("#tabbar").innerHTML = tb.map(([h, i, l, g]) => `<a href="#${h}" class="${group === g ? "on" : ""}">${ic(i)}${l}</a>`).join("") + `<button type="button" id="tsearch">${ic("search")}Suche</button>`;
+  $("#tsearch").onclick = openSearch;
+  $("#apptitle").textContent = title;
+  const bk = $("#back"); bk.classList.toggle("show", !!back); $("#brand").classList.toggle("hide", !!back);
+  if (back) { bk.href = back[0]; $("#backlbl").textContent = back[1]; }
+}
+
+const legend = `<div class="legend">${Object.entries(FS).map(([k, n]) => `<span class="f-${k}">${n}</span>`).join("")}</div>`;
+const rowHtml = (u) => `<a class="row f-${mainF(u)}" href="#${slug(u.id)}">
+  <span class="bar"></span><span><div class="t">${esc(u.titel)}</div><div class="m">UV ${u.id} · ca. ${u.std} Std. · ${esc(fieldsOf(u).map((f) => FS[f]).join(", "))}</div></span>
+  <span class="r">${ic("chev")}</span></a>`;
+const stripHtml = (jg) => `<div class="strip">${UV.filter((u) => u.jg === jg).map((u) => `<a class="f-${mainF(u)}" href="#${slug(u.id)}" style="flex:${u.std}" title="${esc(u.titel)}">${u.id}</a>`).join("")}</div>`;
+const sumStd = (jg) => UV.filter((u) => u.jg === jg).reduce((a, u) => a + u.std, 0);
+const allKeys = [...Object.keys(U), ...Object.keys(K)];
+
+function viewStart() {
+  shell("start", "Informatik an der Elly");
+  $("#app").innerHTML = `
+  <section class="hello"><h1 class="big">Informatik an der Elly</h1>
+    <p class="muted" style="margin:0;max-width:62ch">Der schulinterne Lehrplan für die Klassen 5 und 6: Unterrichtsvorhaben, inhaltliche Bausteine, Kompetenzerwartungen nach dem Kernlehrplan NRW, Material und Vernetzung.</p></section>
+  <section class="sec"><div class="sechead"><h2>Klassen</h2></div>
+    <div class="tiles">${JGS.map((j) => { const us = UV.filter((u) => u.jg === j);
+      return `<a class="card tile" href="#jg-${j}"><span class="n">${j}</span><span class="s">${us.length} Unterrichtsvorhaben · ca. ${sumStd(j)} Std. · 1 Std./Woche</span>
+      <ul class="ul2">${us.map((u) => `<li>${esc(u.kurz)}</li>`).join("")}</ul>
+      <span class="mini">${us.map((u) => `<span class="f-${mainF(u)}" style="flex:${u.std}"></span>`).join("")}</span></a>`; }).join("")}</div>
+    ${legend}</section>
+  <section class="sec"><h2>Mehr</h2>
+    <div class="card rows">
+      <a class="row f-ID" href="#kompetenzen"><span class="bar"></span><span><div class="t">Kompetenzen und KLP-Abgleich</div><div class="m">Alle ${allKeys.length} Kompetenzerwartungen des Kernlehrplans mit den passenden Unterrichtsvorhaben</div></span><span class="r">${ic("chev")}</span></a>
+      <a class="row f-AL" href="#bewertung"><span class="bar"></span><span><div class="t">Grundsätze und Leistungsbewertung</div><div class="m">So unterrichten wir, so bewerten wir, Lehr- und Lernmittel</div></span><span class="r">${ic("chev")}</span></a>
+    </div></section>
+  <section class="sec"><div class="stats">
+    <div class="card stat"><b>${UV.length}</b><span>Unterrichtsvorhaben</span></div>
+    <div class="card stat"><b>1 × 45</b><span>Minuten pro Woche</span></div>
+    <div class="card stat"><b>${allKeys.filter((k) => where(k).length).length}/${allKeys.length}</b><span>KLP-Kompetenzen abgedeckt</span></div>
+    <div class="card stat"><b>KLP 2021</b><span>Informatik 5/6 NRW</span></div></div></section>`;
+}
+
+function viewJg(jg) {
+  lastJg = jg; try { localStorage.setItem("elly-if-jg", jg); } catch (e) {}
+  shell(`jg-${jg}`, `Klasse ${jg}`);
+  const us = UV.filter((u) => u.jg === jg);
+  const fset = [...new Set(us.flatMap(fieldsOf))];
+  $("#app").innerHTML = `
+  <nav class="seg" aria-label="Jahrgang">${JGS.map((j) => `<a href="#jg-${j}" class="${j === jg ? "on" : ""}">${j}</a>`).join("")}</nav>
+  <section class="sec" style="margin-top:16px"><h1 class="desk">Klasse ${jg}</h1>
+    <p class="muted small" style="margin:0">1 Std./Woche · ${us.length} Unterrichtsvorhaben · ca. ${sumStd(jg)} Std. verplant, Rest als Puffer</p>
+    ${stripHtml(jg)}<div class="stripleg"><span>Sommer</span><span>ca. ${sumStd(jg)} Std.</span><span>Sommer</span></div>${legend}</section>
+  <section class="sec"><div class="sechead"><h2>Unterrichtsvorhaben</h2></div>
+    <div class="card rows">${us.map(rowHtml).join("")}</div></section>
+  <section class="sec"><div class="sechead"><h2>Inhaltsfelder in Klasse ${jg}</h2><a href="#kompetenzen">KLP-Abgleich</a></div>
+    <div class="card rows">${fset.map((f) => `<a class="row f-${f}" href="#kf-${f}"><span class="bar"></span><span><div class="t">${esc(FN[f])}</div><div class="m">${us.filter((u) => u.felder[f]).map((u) => `UV ${u.id}: ${esc(u.felder[f].map((i) => KLP.felder[f].sp[i]).join(", "))}`).join(" · ")}</div></span><span class="r">${ic("chev")}</span></a>`).join("")}</div></section>`;
+}
+
+function acc(icon, cls, title, sub, body, open) {
+  return `<details class="card ${cls}" ${open ? "open" : ""}><summary><span class="ico">${ic(icon)}</span><span class="lbl">${title}<small>${sub}</small></span>${ic("chev", "i chev")}</summary><div class="body">${body}</div></details>`;
+}
+const ul = (arr) => `<ul>${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+const keLi = (v, extra = "") => `<li class="${v[1] ? "v" : ""}"><span class="tx">${esc(v[0])}</span>${v[1] || v[2] || extra ? `<span class="meta">${v[1] ? '<span class="vt">Vertiefung</span>' : ""}${v[2] ? `<span class="ref">${esc(v[2])}</span>` : ""}${extra}</span>` : ""}</li>`;
+const uvChips = (ids, cur) => ids.map((id) => `<a class="chip f-${mainF(byId[id])}" href="#${slug(id)}" style="${id === cur ? "outline:2px solid currentColor" : ""}">UV ${id}</a>`).join("");
+const linkify = (t) => esc(t).replace(/UV (\d\.\d)/g, (m, id) => `<a class="chip f-${mainF(byId[id])}" href="#${slug(id)}">UV ${id}</a>`);
+const vToggle = `<label class="toggle"><input type="checkbox" class="vtg" ${showV ? "checked" : ""}> Vertiefungen anzeigen (für die Realschule optional)</label>`;
+
+function viewUV(id) {
+  const u = byId[id]; if (!u) return viewStart();
+  shell(`jg-${u.jg}`, `UV ${u.id}`, [`#jg-${u.jg}`, `Klasse ${u.jg}`]);
+  const i = UV.indexOf(u), prev = UV[i - 1], next = UV[i + 1];
+  const kon = u.konkret.filter((k) => showV || !K[k][1]);
+  const groups = {}; u.ueber.filter((k) => showV || !U[k][1]).forEach((k) => (groups[UG[k]] = groups[UG[k]] || []).push(k));
+  const nV = u.konkret.filter((k) => K[k][1]).length;
+  $("#app").innerHTML = `
+  <section class="thead">
+    <div class="chips">${fieldsOf(u).map((f) => `<a class="chip f-${f}" href="#kf-${f}">${esc(FS[f])}</a>`).join("")}</div>
+    <h1>${esc(u.titel)}</h1>
+    <p class="muted" style="margin:0;font-size:17px">${esc(u.frage)}</p>
+    <div class="facts"><div><b>ca. ${u.std}</b><span>Unterrichtsstunden</span></div><div><b>${u.bausteine.length}</b><span>Bausteine</span></div><div><b>${u.konkret.length}</b><span>Kompetenzen${nV ? ` (${nV} Vert.)` : ""}</span></div></div>
+  </section>
+  <section class="sec"><div class="sechead"><h2>Inhaltliche Bausteine</h2><span class="muted small">Vorschlag</span></div>
+    <ol class="card steps">${u.bausteine.map(([t, h]) => `<li><span>${esc(t)}</span><span class="pg">${h} Std.</span></li>`).join("")}${u.hinweis ? `<li class="note"><span>${esc(u.hinweis)}</span></li>` : ""}</ol></section>
+  <section class="sec"><h2>Vernetzung</h2>
+    <div class="flow"><div class="card pad"><h3>Im Fach Informatik</h3><ul>${u.vernetzung.map((v) => `<li>${linkify(v)}</li>`).join("")}</ul></div>
+    <div class="card pad"><h3>Mit anderen Fächern</h3><ul>${u.synergien.map((v) => `<li>${esc(v)}</li>`).join("")}</ul></div></div></section>
+  <section class="sec"><h2>Details</h2><div class="acc">
+    ${acc("target", `f-${mainF(u)}`, "Konkretisierte Kompetenzerwartungen", "Die Schülerinnen und Schüler …", vToggle + `<ul class="ke">${kon.map((k) => keLi(K[k], `<span class="tag">${esc(FS[KF[k]])}</span>`)).join("")}</ul>`, true)}
+    ${acc("users", "f-ot", "Übergeordnete Kompetenzerwartungen", Object.keys(groups).map((g) => KLP.ueber[g].name.replace(/ \(.*\)/, "")).join(", "), Object.entries(groups).map(([g, ks]) => `<div class="kl"><span class="lab">${esc(KLP.ueber[g].name)}</span><ul class="ke">${ks.map((k) => keLi(U[k])).join("")}</ul></div>`).join(""), false)}
+    ${acc("layers", "f-ID", "Inhaltsfelder und Schwerpunkte", fieldsOf(u).map((f) => FS[f]).join(", "), fieldsOf(u).map((f) => `<div class="kl f-${f}"><span class="lab" style="color:var(--c)">${esc(FN[f])}</span>${ul(u.felder[f].map((x) => KLP.felder[f].sp[x]))}</div>`).join(""), false)}
+    ${acc("box", "f-AL", "Material", `${u.material.length} Einträge`, ul(u.material), false)}
+    ${acc("clip", "f-AK", "Leistungsfeststellung", "Beispiele, nur „Sonstige Leistungen“", ul(u.leistung), false)}
+  </div></section>
+  <nav class="pager">${prev ? `<a class="card" href="#${slug(prev.id)}"><small>← UV ${prev.id}</small>${esc(prev.kurz)}</a>` : ""}${next ? `<a class="card next" href="#${slug(next.id)}"><small>UV ${next.id} →</small>${esc(next.kurz)}</a>` : ""}</nav>`;
+}
+
+function viewKomp(focus) {
+  shell("kompetenzen", "Kompetenzen");
+  const row = (k, v) => keLi(v, where(k).length ? uvChips(where(k)) : '<span class="chip" style="--c:#b3263a;--soft:#fbe6e9">fehlt</span>');
+  const filt = (o) => Object.entries(o.items).filter(([, v]) => showV || !v[1]);
+  $("#app").innerHTML = `
+  <h1 class="desk" style="margin-bottom:6px">Kompetenzen</h1>
+  <p class="muted" style="margin:0 0 6px;max-width:66ch">Jede Kompetenzerwartung des Kernlehrplans Informatik 5/6 (NRW, 2021) mit den Unterrichtsvorhaben, in denen sie an der Elly erarbeitet wird. Vertiefungen sind laut KLP nur am Gymnasium verpflichtend.</p>
+  ${vToggle}
+  <section class="sec"><h2>Inhaltsfelder</h2><div class="acc">
+    ${Object.entries(KLP.felder).map(([f, o]) => `<div id="kf-${f}">${acc(FI[f], `f-${f}`, esc(o.name), "Schwerpunkte: " + esc(o.sp.join(" · ")), `<ul class="ke">${filt(o).map(([k, v]) => row(k, v)).join("")}</ul>`, focus === f)}</div>`).join("")}
+  </div></section>
+  <section class="sec"><h2>Übergeordnete Kompetenzerwartungen</h2><div class="acc">
+    ${Object.values(KLP.ueber).map((g) => acc("users", "f-ot", esc(g.name), `${Object.keys(g.items).length} Erwartungen`, `<ul class="ke">${filt(g).map(([k, v]) => row(k, v)).join("")}</ul>`, false)).join("")}
+  </div></section>`;
+  if (focus) { const el = document.getElementById("kf-" + focus); if (el) setTimeout(() => el.scrollIntoView({ block: "start" }), 0); }
+}
+
+function viewBew() {
+  shell("bewertung", "Grundsätze & Bewertung");
+  $("#app").innerHTML = `<h1 class="desk" style="margin-bottom:14px">Grundsätze und Bewertung</h1>
+  <div class="acc">
+  ${acc("home", "f-ID", "Rahmen", "1 Wochenstunde, 4 Vorhaben pro Jahr", `<div class="prose"><ul><li>Informatik in Klasse 5 und 6 mit einer Wochenstunde (45 Minuten); pro Schuljahr etwa 30 bis 32 Stunden planbar.</li><li>Vier Unterrichtsvorhaben pro Jahrgang; die Zeitangaben sind Richtwerte, übrige Stunden dienen als Puffer und zur Vertiefung.</li><li>Vertiefungen <span class="vt">Vertiefung</span> sind laut Kernlehrplan nur am Gymnasium verpflichtend und dienen an der Realschule der Differenzierung.</li><li>Angaben wie MKR 6.1 verweisen auf den Medienkompetenzrahmen NRW, VB auf die Rahmenvorgabe Verbraucherbildung.</li></ul></div>`, true)}
+  ${acc("layers", "f-AL", "So unterrichten wir", "Fachdidaktische Grundsätze", `<div class="prose"><ul><li><b>Entdecken vor Erklären:</b> erst ausprobieren und untersuchen, dann gemeinsam sichern.</li><li><b>Erst ohne Computer:</b> neue Themen beginnen mit Karten, Rollenspielen und Rastern.</li><li><b>Lebensweltbezug:</b> Schul-Accounts, Ampel, Spiele, Apps.</li><li><b>Lernpfad-Apps</b> in Klasse 6 mit Stationen, Codewort-Freischaltung und den Niveaus Basis, Standard, Experte; sofortige Rückmeldung, Hilfen in Stufen.</li><li><b>Programmieren nach PRIMM:</b> vorhersagen, ausführen, untersuchen, verändern, selbst gestalten.</li><li><b>Sprachsensibel:</b> Fachbegriffe mit Bild und Satzmuster, gesammelt im Wortspeicher.</li><li><b>Leitfiguren</b> Max, Sophie und Robbi begleiten durch alle Materialien.</li></ul></div>`, false)}
+  ${acc("scale", "f-AK", "Leistungsbewertung", "Nur „Sonstige Leistungen im Unterricht“", `<div class="prose"><p>Grundlage sind § 48 SchulG und § 6 APO-SI. Berücksichtigt werden u. a.:</p><ul><li>mündliche Mitarbeit, Fachsprache, Beiträge in Partner- und Gruppenarbeit</li><li>praktische Arbeit am Computer (z. B. Ordnerstruktur anlegen, Programme erstellen und testen)</li><li>Nachweise aus den Lernpfad-Apps (Codewörter, Stationen)</li><li>kurze schriftliche Übungen</li><li>Produkte: Skizzen, Zustandsdiagramme, PAP, Plakate, Präsentationen</li><li>Heft- bzw. Mappenführung</li></ul><p class="muted small">Die Gewichtung legt die Fachkonferenz fest.</p></div>`, false)}
+  ${acc("book", "f-IS", "Lehr- und Lernmittel", "Apps, Präsentationen, Material", `<div class="prose"><ul><li>Präsentationen und Arbeitsblätter im Informatik-Design der Fachschaft</li><li>HTML-App zur Hardware (UV 5.1)</li><li>„Niki der Roboter“, net-schulbuch.de (UV 5.4)</li><li>„SpionCamp Junior – Operation Maulwurf“ (UV 6.1)</li><li>„Automaten-Alarm“ und „Mampfi das Monster“ (UV 6.2)</li><li>„Mission Orbit“ (UV 6.3)</li><li>inf-schule.de und CS Unplugged (Binärkarten, Entscheidungsbaum)</li></ul></div>`, false)}
+  </div>`;
+}
+
+// Suche
+const IDX = [];
+UV.forEach((u) => {
+  IDX.push({ t: u.titel, m: `UV ${u.id} · ${u.frage}`, h: slug(u.id), f: mainF(u), s: [u.titel, u.kurz, u.frage, ...u.material, ...u.synergien].join(" ") });
+  u.bausteine.forEach(([b]) => IDX.push({ t: b, m: `Baustein in UV ${u.id} ${u.kurz}`, h: slug(u.id), f: mainF(u), s: b }));
+});
+Object.entries(K).forEach(([k, v]) => IDX.push({ t: v[0], m: `Kompetenz · ${FN[KF[k]]} · ${where(k).map((x) => "UV " + x).join(", ")}`, h: "kf-" + KF[k], f: KF[k], s: v[0] }));
+function openSearch() { $("#search").classList.add("show"); $("#q").focus(); doSearch(); }
+function closeSearch() { $("#search").classList.remove("show"); }
+function doSearch() {
+  const q = $("#q").value.trim().toLowerCase();
+  if (q.length < 2) { $("#res").innerHTML = '<div class="hint2">Mindestens zwei Zeichen eingeben, z. B. „Passwort“, „PAP“ oder „Ampel“.</div>'; return; }
+  const hits = IDX.filter((x) => x.s.toLowerCase().includes(q)).slice(0, 40);
+  $("#res").innerHTML = hits.length ? `<div class="card rows">${hits.map((x) => `<a class="row f-${x.f}" href="#${x.h}"><span class="bar"></span><span><div class="t">${esc(x.t)}</div><div class="m">${esc(x.m)}</div></span><span class="r">${ic("chev")}</span></a>`).join("")}</div>` : '<div class="hint2">Keine Treffer.</div>';
+}
+$("#q").addEventListener("input", doSearch);
+$("#sclose").onclick = closeSearch;
+$("#sbtn").onclick = openSearch; $("#msearch").onclick = openSearch;
+$("#res").addEventListener("click", (e) => { if (e.target.closest("a")) closeSearch(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSearch(); });
+
+function route() {
+  const h = location.hash.slice(1) || "start";
+  let m;
+  if ((m = h.match(/^jg-(5|6)$/))) viewJg(+m[1]);
+  else if ((m = h.match(/^uv-(\d)-(\d)$/))) viewUV(m[1] + "." + m[2]);
+  else if (h === "kompetenzen") viewKomp();
+  else if ((m = h.match(/^kf-(\w+)$/))) viewKomp(m[1]);
+  else if (h === "bewertung") viewBew();
+  else viewStart();
+  if (!h.startsWith("kf-")) window.scrollTo(0, 0);
+}
+$("#app").addEventListener("change", (e) => {
+  if (!e.target.classList.contains("vtg")) return;
+  showV = e.target.checked; try { localStorage.setItem("elly-if-v", showV ? "1" : "0"); } catch (err) {}
+  const y = window.scrollY; route(); window.scrollTo(0, y);
+});
+window.addEventListener("hashchange", route);
+route();
+}
+</script>
+</body>
+</html>
